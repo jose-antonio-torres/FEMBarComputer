@@ -1,7 +1,7 @@
 function TestIterative(t)
 
 s = 'I'; % Iterative(I)
-FEM=FEMBarComputed(s,t);
+FEM=FEMBarComputer(s,t);
 FEM.compute();
 
 Stress = FEM.Stress;

@@ -1,7 +1,7 @@
 function TestDirect(t)
 
 s = 'D'; % Direct(D)
-FEM=FEMBarComputed(s,t);
+FEM=FEMBarComputer(s,t);
 FEM.compute();
 
 Stress = FEM.Stress;
