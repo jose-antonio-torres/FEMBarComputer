@@ -49,7 +49,7 @@ classdef FEMBarComputer < handle
         end
         
         function computeStiffnessMatrix(obj)
-            Kcomputed = StMatrixComputed(obj.nElem,obj.mat(1),obj.mat(2),obj.Tnod,obj.x);
+            Kcomputed = StiffnessMatrixComputed(obj.nElem,obj.mat(1),obj.mat(2),obj.Tnod,obj.x);
             obj.K_G = Kcomputed.K;
             obj.Td = Kcomputed.Td;
         end
