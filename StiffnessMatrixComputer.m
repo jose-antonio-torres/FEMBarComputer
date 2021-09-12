@@ -6,16 +6,14 @@ classdef StiffnessMatrixComputer < handle
     end
     
     properties (Access = public)
-        Td
         K = zeros(16,16) 
     end
     
     methods (Access = public)
         
-        function obj = StiffnessMatrixComputer(nElem,mat1,mat2,Tnod,x)
+        function obj = StiffnessMatrixComputer(nElem,mat1,mat2,Tnod,x,Td)
             obj.computeElementalStiffnessMatrices(nElem,mat1,mat2,x,Tnod);
-            obj.defineDoFMatrix(nElem,Tnod);
-            obj.globalStiffnessMatrixAssembly(nElem);
+            obj.globalStiffnessMatrixAssembly(nElem,Td);
         end
         
     end
@@ -47,23 +45,12 @@ classdef StiffnessMatrixComputer < handle
                 l = BarElem.l;
         end
         
-        function defineDoFMatrix(obj,nElem,Tnod)
-            for iel=1:nElem
-                for a=1:2
-                    for j=1:2
-                        i=2*(a-1)+j;
-                        obj.Td(iel,i)=2*(Tnod(iel,a)-1)+j;
-                    end
-                end
-            end
-        end
-        
-        function globalStiffnessMatrixAssembly(obj,nElem)
+        function globalStiffnessMatrixAssembly(obj,nElem,Td)
             for iel=1:nElem
                 for i=1:4
-                    I=obj.Td(iel,i);
+                    I=Td(iel,i);
                     for j=1:4
-                        J=obj.Td(iel,j);
+                        J=Td(iel,j);
                         obj.K(I,J)=obj.K(I,J)+obj.Kel(i,j,iel);
                     end
                 end

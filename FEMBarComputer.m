@@ -22,11 +22,12 @@ classdef FEMBarComputer < handle
     methods (Access = public)
         
         function obj = FEMBarComputer(s,t)
-            obj.init(s);
-            obj.loadData(t);
+            obj.init(t);
+            obj.createSolver(s);
         end
         
         function compute(obj)
+            obj.computeDoFMatrix();
             obj.computeStiffnessMatrix();
             obj.computeUnknownDisplacements();
             obj.computeStress();
@@ -35,11 +36,7 @@ classdef FEMBarComputer < handle
     
     methods (Access = private)
         
-        function init(obj,s)
-            obj.createSolver(s);
-        end
-        
-        function loadData(obj,t)
+        function init(obj,t)
             data = load(['Tests/BC',t,'.mat']);
             obj.F    = data.BC(1).f;
             obj.x    = data.BC(2).f;
@@ -49,9 +46,13 @@ classdef FEMBarComputer < handle
         end
         
         function computeStiffnessMatrix(obj)
-            Kcomputed = StiffnessMatrixComputer(obj.nElem,obj.mat(1),obj.mat(2),obj.Tnod,obj.x);
+            Kcomputed = StiffnessMatrixComputer(obj.nElem,obj.mat(1),obj.mat(2),obj.Tnod,obj.x,obj.Td);
             obj.K_G = Kcomputed.K;
-            obj.Td = Kcomputed.Td;
+        end
+        
+        function computeDoFMatrix(obj)
+            Tdcomputed = DoFMatrixComputer(obj.nElem,obj.Tnod);
+            obj.Td = Tdcomputed.Td;
         end
         
         function createSolver(obj,solverType)
