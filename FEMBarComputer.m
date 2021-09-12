@@ -75,7 +75,7 @@ classdef FEMBarComputer < handle
             R=zeros(2,4,obj.nElem);
             u_T(obj.vL)=obj.uL;
             for iel=1:obj.nElem
-                BarElem = BarElemComputed(obj.x,obj.Tnod,iel);
+                BarElem = BarElemComputer(obj.x,obj.Tnod,iel);
                 R=(1/BarElem.l)*[BarElem.x2-BarElem.x1 BarElem.y2-BarElem.y1 0 0;...
                     0 0 BarElem.x2-BarElem.x1 BarElem.y2-BarElem.y1];
                 for i=1:4
