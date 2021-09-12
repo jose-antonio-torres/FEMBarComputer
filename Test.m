@@ -11,10 +11,12 @@ profile('on')
 tD = ['1';'2';'3'];
 tI = ['4';'5'];
 for i=1:length(tD)
-    TestDirect(tD(i));
+    Problem = DirectRun;
+    Problem.selectTest(tD(i));
 end
 for i=1:length(tI)
-    TestIterative(tI(i));
+    Problem = IterativeRun;
+    Problem.selectTest(tD(i));
 end
 
 profile('viewer')

@@ -5,6 +5,7 @@ classdef DirectSolver < Solver
         function computeDisplacements(obj)
             obj.u=obj.LHS\obj.RHS;
         end
+        
     end
 end
 
