@@ -9,8 +9,8 @@ classdef FEMBarComputer < handle
         Tmat
         nElem = 12
         K_G 
-        vR=[1 2 9 10]
-        vL=[3 4 5 6 7 8 11 12 13 14 15 16]
+        vR = [1 2 9 10]
+        vL = [3 4 5 6 7 8 11 12 13 14 15 16]
         uL
         solver
     end
@@ -37,7 +37,7 @@ classdef FEMBarComputer < handle
     methods (Access = private)
         
         function init(obj,t)
-            data = load(['Tests/BC',t,'.mat']);
+            data     = load(['Tests/BC',t,'.mat']);
             obj.F    = data.BC(1).f;
             obj.x    = data.BC(2).f;
             obj.Tnod = data.BC(3).f;
@@ -47,17 +47,17 @@ classdef FEMBarComputer < handle
         
         function computeStiffnessMatrix(obj)
             Kcomputed = StiffnessMatrixComputer(obj.nElem,obj.mat(1),obj.mat(2),obj.Tnod,obj.x,obj.Td);
-            obj.K_G = Kcomputed.K;
+            obj.K_G   = Kcomputed.K;
         end
         
         function computeDoFMatrix(obj)
             Tdcomputed = DoFMatrixComputer(obj.nElem,obj.Tnod);
-            obj.Td = Tdcomputed.Td;
+            obj.Td     = Tdcomputed.Td;
         end
         
         function createSolver(obj,solverType)
                 cParams.type = solverType;
-                obj.solver = SolverFactory.create(cParams);
+                obj.solver   = SolverFactory.create(cParams);
         end
         
         function solveSystem(obj,K_LL,F_extL)
@@ -72,21 +72,8 @@ classdef FEMBarComputer < handle
         end
         
         function computeStress(obj)
-            u_T=zeros(16,1);
-            R=zeros(2,4,obj.nElem);
-            u_T(obj.vL)=obj.uL;
-            for iel=1:obj.nElem
-                BarElem = BarElemComputer(obj.x,obj.Tnod,iel);
-                R=(1/BarElem.l)*[BarElem.x2-BarElem.x1 BarElem.y2-BarElem.y1 0 0;...
-                    0 0 BarElem.x2-BarElem.x1 BarElem.y2-BarElem.y1];
-                for i=1:4
-                    I=obj.Td(iel,i);
-                    u_e(i,1)=u_T(I,1);
-                end
-                uprima_e=R*u_e;
-                Strain(iel,1)=(1/BarElem.l)*[-1 1]*uprima_e;
-                obj.Stress(iel,1)=obj.mat(1)*Strain(iel,1);
-            end
+            stressObject = StressComputer(obj.nElem,obj.uL,obj.vL,obj.x,obj.Tnod,obj.Td,obj.mat(1));
+            obj.Stress   = stressObject.Stress;
         end
 
     end
