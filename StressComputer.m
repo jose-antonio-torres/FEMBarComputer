@@ -13,7 +13,6 @@ classdef StressComputer < handle
     
     methods (Access = public)
         function obj = StressComputer(nElem,uL,vL,x,Tnod,Td,mat1)
-            obj.R=zeros(2,4,nElem);
             obj.defineGlobalDisplacementVector(uL,vL);
             obj.computeStress(nElem,x,Tnod,Td,mat1);
         end
@@ -28,7 +27,7 @@ classdef StressComputer < handle
         function computeStress(obj,nElem,x,Tnod,Td,mat1)
             for iel=1:nElem
                 BarElem = BarElemComputer(x,Tnod,iel);
-                obj.defineRotationMatrix(BarElem.x1,BarElem.x2,...
+                obj.defineEuclidianMatrix(BarElem.x1,BarElem.x2,...
                     BarElem.y1,BarElem.y2,BarElem.l);
                 obj.defineLocalElementalDisplacementVectors(Td,iel);
                 obj.computeStrain(BarElem.l,iel);
@@ -37,9 +36,9 @@ classdef StressComputer < handle
             obj.Stress = StressVector;
         end
         
-        function defineRotationMatrix(obj,x1,x2,y1,y2,l)
-            obj.R=(1/l)*[x2-x1 y2-y1 0 0;...
-                0 0 x2-x1 y2-y1];
+        function defineEuclidianMatrix(obj,x1,x2,y1,y2,l)
+            Robj = EuclidianMatrixComputer(x1,x2,y1,y2,l);
+            obj.R = Robj.R;
         end
         
         function defineLocalElementalDisplacementVectors(obj,Td,iel)

@@ -20,15 +20,15 @@ classdef StiffnessMatrixComputer < handle
     
     methods (Access = private)
         
-        function computeRotationMatrix(obj,nElem,x1,x2,y1,y2,l)
-            obj.R = zeros(2,4,nElem);
-            obj.R=(1/l)*[x2-x1 y2-y1 0 0; 0 0 x2-x1 y2-y1];
+        function computeEuclidianMatrix(obj,x1,x2,y1,y2,l)
+            Robj = EuclidianMatrixComputer(x1,x2,y1,y2,l);
+            obj.R = Robj.R;
         end
         
         function computeElementalStiffnessMatrices(obj,nElem,mat1,mat2,x,Tnod)
             for iel=1:nElem
                 [x1,x2,y1,y2,l] = obj.computeBarLength(x,Tnod,iel);
-                obj.computeRotationMatrix(nElem,x1,x2,y1,y2,l);
+                obj.computeEuclidianMatrix(x1,x2,y1,y2,l);
                 Kprima=mat1*mat2/l*[1 -1; -1 1];
                 Kelem=obj.R'*Kprima*obj.R;
                 K_el(:,:,iel)=Kelem;
