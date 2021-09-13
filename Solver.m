@@ -12,8 +12,8 @@ classdef Solver < handle
     methods (Access = public)
         
         function solveSystem(obj,K,F)
-            obj.LHS=K;
-            obj.RHS=F;
+            obj.LHS = K;
+            obj.RHS = F;
             obj.computeDisplacements();
         end
         

@@ -10,11 +10,11 @@ profile('on')
 
 tD = ['1';'2';'3'];
 tI = ['4';'5'];
-for i=1:length(tD)
+for i = 1:length(tD)
     Problem = DirectRun;
     Problem.selectTest(tD(i));
 end
-for i=1:length(tI)
+for i = 1:length(tI)
     Problem = IterativeRun;
     Problem.selectTest(tD(i));
 end

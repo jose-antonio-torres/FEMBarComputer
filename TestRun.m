@@ -14,7 +14,7 @@ classdef TestRun < handle
     methods (Access = protected)
         function testSolver(obj,s,t)
             Stress = obj.computeProblemStress(s,t);
-            error = obj.calculateError(Stress,t);
+            error  = obj.calculateError(Stress,t);
             if error < 1e-5
                 cprintf('green', 'Test pass ');
             else
@@ -23,14 +23,14 @@ classdef TestRun < handle
         end
    
         function [Stress] = computeProblemStress(obj,s,t)
-            FEM=FEMBarComputer(s,t);
+            FEM = FEMBarComputer(s,t);
             FEM.compute();
             Stress = FEM.Stress;
         end
         
         function [error] = calculateError(obj,Stress,t)
             control = load(['Results/Stress',t,'_ok.mat']);
-            error = norm(Stress-control.Stress);
+            error   = norm(Stress-control.Stress);
         end
     end
     

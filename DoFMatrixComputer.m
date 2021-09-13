@@ -10,11 +10,11 @@ classdef DoFMatrixComputer < handle
         end
         
         function defineDoFMatrix(obj,nElem,Tnod)
-            for iel=1:nElem
-                for a=1:2
-                    for j=1:2
-                        i=2*(a-1)+j;
-                        obj.Td(iel,i)=2*(Tnod(iel,a)-1)+j;
+            for iel = 1:nElem
+                for a = 1:2
+                    for j = 1:2
+                        i = 2*(a-1)+j;
+                        obj.Td(iel,i) = 2*(Tnod(iel,a)-1)+j;
                     end
                 end
             end
