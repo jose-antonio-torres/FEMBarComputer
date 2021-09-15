@@ -11,12 +11,18 @@ classdef Solver < handle
     
     methods (Access = public)
         
-        function solveSystem(obj,K,F)
-            obj.LHS = K;
-            obj.RHS = F;
+        function solveSystem(obj,cParams)
+            obj.init(cParams.K_LL,cParams.F_extL);
             obj.computeDisplacements();
         end
         
+    end
+    
+    methods (Access = private)
+        function init(obj,K,F)
+            obj.LHS = K;
+            obj.RHS = F;
+        end
     end
     
     methods (Abstract, Access = protected)

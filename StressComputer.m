@@ -13,14 +13,14 @@ classdef StressComputer < handle
     
     methods (Access = public)
         function obj = StressComputer(nElem,uL,vL,x,Tnod,Td,mat1)
-            obj.defineGlobalDisplacementVector(uL,vL);
+            obj.init(uL,vL);
             obj.computeStress(nElem,x,Tnod,Td,mat1);
         end
     end
     
     methods (Access = private)
         
-        function defineGlobalDisplacementVector(obj,uL,vL)
+        function init(obj,uL,vL)
             obj.u_T(vL) = uL;
         end
         

@@ -21,9 +21,9 @@ classdef FEMBarComputer < handle
     
     methods (Access = public)
         
-        function obj = FEMBarComputer(s,t)
-            obj.init(t);
-            obj.createSolver(s);
+        function obj = FEMBarComputer(cParams)
+            obj.init(cParams.t);
+            obj.createSolver(cParams.s);
         end
         
         function compute(obj)
@@ -46,7 +46,8 @@ classdef FEMBarComputer < handle
         end
         
         function computeStiffnessMatrix(obj)
-            Kcomputed = StiffnessMatrixComputer(obj.nElem,obj.mat(1),obj.mat(2),obj.Tnod,obj.x,obj.Td);
+            Kcomputed = StiffnessMatrixComputer(obj.nElem,obj.mat(1),...
+                obj.mat(2),obj.Tnod,obj.x,obj.Td);
             obj.K_G   = Kcomputed.K;
         end
         
@@ -60,19 +61,28 @@ classdef FEMBarComputer < handle
                 obj.solver   = SolverFactory.create(cParams);
         end
         
-        function solveSystem(obj,K_LL,F_extL)
-            obj.solver.solveSystem(K_LL,F_extL);
+        function solveSystem(obj,cParams)
+            obj.solver.solveSystem(cParams);
             obj.uL = obj.solver.u;
         end
         
         function computeUnknownDisplacements(obj)
-            K_LL   = obj.K_G(obj.vL,obj.vL);
+            cParams.K_LL   = obj.computeReducedStiffnessMatrix();
+            cParams.F_extL = obj.computeReducedExternalForcesVector();
+            obj.solveSystem(cParams);
+        end
+        
+        function K_LL = computeReducedStiffnessMatrix(obj)
+            K_LL = obj.K_G(obj.vL,obj.vL);
+        end
+        
+        function F_extL = computeReducedExternalForcesVector(obj)
             F_extL = [0; obj.F; 0; obj.F; 0; obj.F; 0; 0; 0; 0; 0; 0];
-            obj.solveSystem(K_LL,F_extL);
         end
         
         function computeStress(obj)
-            stressObject = StressComputer(obj.nElem,obj.uL,obj.vL,obj.x,obj.Tnod,obj.Td,obj.mat(1));
+            stressObject = StressComputer(obj.nElem,obj.uL,obj.vL,...
+                obj.x,obj.Tnod,obj.Td,obj.mat(1));
             obj.Stress   = stressObject.Stress;
         end
 

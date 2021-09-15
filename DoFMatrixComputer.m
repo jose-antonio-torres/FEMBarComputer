@@ -14,10 +14,11 @@ classdef DoFMatrixComputer < handle
                 for a = 1:2
                     for j = 1:2
                         i = 2*(a-1)+j;
-                        obj.Td(iel,i) = 2*(Tnod(iel,a)-1)+j;
+                        Tdmat(iel,i) = 2*(Tnod(iel,a)-1)+j;
                     end
                 end
             end
+            obj.Td = Tdmat;
         end
     end
 end

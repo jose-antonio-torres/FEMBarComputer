@@ -12,13 +12,17 @@ classdef StiffnessMatrixComputer < handle
     methods (Access = public)
         
         function obj = StiffnessMatrixComputer(nElem,mat1,mat2,Tnod,x,Td)
-            obj.computeElementalStiffnessMatrices(nElem,mat1,mat2,x,Tnod);
-            obj.globalStiffnessMatrixAssembly(nElem,Td);
+            obj.compute(nElem,mat1,mat2,Tnod,x,Td);
         end
         
     end
     
     methods (Access = private)
+        
+        function compute(obj,nElem,mat1,mat2,Tnod,x,Td)
+            obj.computeElementalStiffnessMatrices(nElem,mat1,mat2,x,Tnod);
+            obj.globalStiffnessMatrixAssembly(nElem,Td);
+        end
         
         function computeEuclidianMatrix(obj,x1,x2,y1,y2,l)
             Robj  = EuclidianMatrixComputer(x1,x2,y1,y2,l);
@@ -46,15 +50,17 @@ classdef StiffnessMatrixComputer < handle
         end
         
         function globalStiffnessMatrixAssembly(obj,nElem,Td)
+            K_global = obj.K;
             for iel = 1:nElem
                 for i = 1:4
                     I = Td(iel,i);
                     for j = 1:4
                         J = Td(iel,j);
-                        obj.K(I,J) = obj.K(I,J)+obj.Kel(i,j,iel);
+                        K_global(I,J) = K_global(I,J)+obj.Kel(i,j,iel);
                     end
                 end
             end
+            obj.K = K_global;
         end
         
     end
