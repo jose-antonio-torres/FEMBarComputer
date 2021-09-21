@@ -1,5 +1,10 @@
 %% Test FEM
 
+% Wednesday 22/09:
+% all objects are 100% general - for instance check function of zip
+% static functions when necessary
+% DUDA: diferencia entre s y cParams + entran en constructor o compute¿?
+
 clear all;
 clc;
 

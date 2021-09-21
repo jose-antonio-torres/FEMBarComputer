@@ -11,8 +11,8 @@ classdef Solver < handle
     
     methods (Access = public)
         
-        function solveSystem(obj,cParams)
-            obj.init(cParams.K_LL,cParams.F_extL);
+        function solveSystem(obj,s)
+            obj.init(s.K_LL,s.F_extL);
             obj.computeDisplacements();
         end
         

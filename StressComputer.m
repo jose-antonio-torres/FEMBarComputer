@@ -12,45 +12,48 @@ classdef StressComputer < handle
     end
     
     methods (Access = public)
-        function obj = StressComputer(nElem,uL,vL,x,Tnod,Td,mat1)
-            obj.init(uL,vL);
-            obj.computeStress(nElem,x,Tnod,Td,mat1);
+        function obj = StressComputer(s)
+            obj.init(s);
+            obj.computeStress(s);
         end
     end
     
     methods (Access = private)
         
-        function init(obj,uL,vL)
-            obj.u_T(vL) = uL;
+        function init(obj,s)
+            obj.u_T(s.vL) = s.uL;
         end
         
-        function computeStress(obj,nElem,x,Tnod,Td,mat1)
-            for iel = 1:nElem
-                BarElem = BarElemComputer(x,Tnod,iel);
-                obj.defineEuclidianMatrix(BarElem.x1,BarElem.x2,...
-                    BarElem.y1,BarElem.y2,BarElem.l);
-                obj.defineLocalElementalDisplacementVectors(Td,iel);
-                obj.computeStrain(BarElem.l,iel);
-                StressVector(iel,1) = mat1*obj.Strain(iel,1);
+        function computeStress(obj,s)
+            for iel = 1:s.nElem
+                s.iel = iel;
+                BarElem = BarElemComputer();
+                BarElem.compute(s);
+                s.l = BarElem.l;
+                obj.defineEuclidianMatrix(BarElem);
+                obj.defineLocalElementalDisplacementVectors(s);
+                obj.computeStrain(s);
+                StressVector(iel,1) = s.mat1*obj.Strain(iel,1);
             end
             obj.Stress = StressVector;
         end
         
-        function defineEuclidianMatrix(obj,x1,x2,y1,y2,l)
-            Robj  = EuclidianMatrixComputer(x1,x2,y1,y2,l);
+        function defineEuclidianMatrix(obj,BarElem)
+            Robj  = EuclidianMatrixComputer;
+            Robj.compute(BarElem);
             obj.R = Robj.R;
         end
         
-        function defineLocalElementalDisplacementVectors(obj,Td,iel)
+        function defineLocalElementalDisplacementVectors(obj,s)
             for i = 1:4
-                I        = Td(iel,i);
+                I        = s.Td(s.iel,i);
                 u_e(i,1) = obj.u_T(I,1);
             end
             obj.uprima_e = obj.R*u_e;
         end
         
-        function computeStrain(obj,l,iel)
-            obj.Strain(iel,1) = (1/l)*[-1 1]*obj.uprima_e;
+        function computeStrain(obj,s)
+            obj.Strain(s.iel,1) = (1/s.l)*[-1 1]*obj.uprima_e;
         end
         
     end

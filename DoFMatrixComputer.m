@@ -4,17 +4,26 @@ classdef DoFMatrixComputer < handle
         Td
     end
     
-    methods
-        function obj = DoFMatrixComputer(nElem,Tnod)
-            obj.defineDoFMatrix(nElem,Tnod)
+    methods (Access = public)
+        function obj = DoFMatrixComputer()
+            
         end
         
-        function defineDoFMatrix(obj,nElem,Tnod)
-            for iel = 1:nElem
+        function compute(obj,s)
+            obj.defineDoFMatrix(s);
+        end
+        
+    end
+    
+    methods (Access = private)
+        
+        function defineDoFMatrix(obj,s)
+            Tdmat = zeros(s.nElem,4);
+            for iel = 1:s.nElem
                 for a = 1:2
                     for j = 1:2
                         i = 2*(a-1)+j;
-                        Tdmat(iel,i) = 2*(Tnod(iel,a)-1)+j;
+                        Tdmat(iel,i) = 2*(s.Tnod(iel,a)-1)+j;
                     end
                 end
             end

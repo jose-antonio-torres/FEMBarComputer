@@ -5,8 +5,18 @@ classdef EuclidianMatrixComputer < handle
     end
     
     methods (Access = public)
-        function obj = EuclidianMatrixComputer(x1,x2,y1,y2,l)
-            obj.R = (1/l)*[x2-x1 y2-y1 0 0; 0 0 x2-x1 y2-y1];
+        function obj = EuclidianMatrixComputer()
+            
+        end
+        
+        function compute(obj,s)
+            obj.computeEuclidianMatrix(s);
+        end
+    end
+    
+    methods (Access = private)
+        function computeEuclidianMatrix(obj,s)
+            obj.R = (1/s.l)*[s.x2-s.x1 s.y2-s.y1 0 0; 0 0 s.x2-s.x1 s.y2-s.y1];
         end
     end
 end

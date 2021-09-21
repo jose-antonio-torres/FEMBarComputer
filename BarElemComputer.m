@@ -9,22 +9,26 @@ classdef BarElemComputer < handle
     end
     
     methods (Access = public)
-        function obj = BarElemComputer(x,Tnod,iel)
-            obj.computeFirstNode(x,Tnod,iel);
-            obj.computeSecondNode(x,Tnod,iel);
+        function obj = BarElemComputer()
+
+        end
+        
+        function compute(obj,s)
+            obj.computeFirstNode(s);
+            obj.computeSecondNode(s);
             obj.computeLength();
         end
     end
     
     methods (Access = private)
-        function computeFirstNode(obj,x,Tnod,iel)
-            obj.x1 = x(Tnod(iel,1),1);
-            obj.y1 = x(Tnod(iel,1),2);
+        function computeFirstNode(obj,s)
+            obj.x1 = s.x(s.Tnod(s.iel,1),1);
+            obj.y1 = s.x(s.Tnod(s.iel,1),2);
         end
         
-        function computeSecondNode(obj,x,Tnod,iel)
-            obj.x2 = x(Tnod(iel,2),1);
-            obj.y2 = x(Tnod(iel,2),2);
+        function computeSecondNode(obj,s)
+            obj.x2 = s.x(s.Tnod(s.iel,2),1);
+            obj.y2 = s.x(s.Tnod(s.iel,2),2);
         end
         
         function computeLength(obj)

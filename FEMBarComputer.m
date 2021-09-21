@@ -46,13 +46,22 @@ classdef FEMBarComputer < handle
         end
         
         function computeStiffnessMatrix(obj)
-            Kcomputed = StiffnessMatrixComputer(obj.nElem,obj.mat(1),...
-                obj.mat(2),obj.Tnod,obj.x,obj.Td);
+            s.nElem = obj.nElem;
+            s.mat1 = obj.mat(1);
+            s.mat2 = obj.mat(2);
+            s.Tnod = obj.Tnod;
+            s.x = obj.x;
+            s.Td = obj.Td;
+            Kcomputed = StiffnessMatrixComputer;
+            Kcomputed.compute(s);
             obj.K_G   = Kcomputed.K;
         end
         
         function computeDoFMatrix(obj)
-            Tdcomputed = DoFMatrixComputer(obj.nElem,obj.Tnod);
+            s.nElem = obj.nElem;
+            s.Tnod = obj.Tnod;
+            Tdcomputed = DoFMatrixComputer;
+            Tdcomputed.compute(s);
             obj.Td     = Tdcomputed.Td;
         end
         
@@ -67,9 +76,9 @@ classdef FEMBarComputer < handle
         end
         
         function computeUnknownDisplacements(obj)
-            cParams.K_LL   = obj.computeReducedStiffnessMatrix();
-            cParams.F_extL = obj.computeReducedExternalForcesVector();
-            obj.solveSystem(cParams);
+            s.K_LL   = obj.computeReducedStiffnessMatrix();
+            s.F_extL = obj.computeReducedExternalForcesVector();
+            obj.solveSystem(s);
         end
         
         function K_LL = computeReducedStiffnessMatrix(obj)
@@ -81,8 +90,14 @@ classdef FEMBarComputer < handle
         end
         
         function computeStress(obj)
-            stressObject = StressComputer(obj.nElem,obj.uL,obj.vL,...
-                obj.x,obj.Tnod,obj.Td,obj.mat(1));
+            s.nElem = obj.nElem;
+            s.uL = obj.uL;
+            s.vL = obj.vL;
+            s.x = obj.x;
+            s.Tnod = obj.Tnod;
+            s.Td = obj.Td;
+            s.mat1 = obj.mat(1);
+            stressObject = StressComputer(s);
             obj.Stress   = stressObject.Stress;
         end
 
