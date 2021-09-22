@@ -30,32 +30,27 @@ classdef StiffnessMatrixComputer < handle
         end
         
         function computeEuclidianMatrix(obj,cParams)
-            s = cParams;
             Robj  = EuclidianMatrixComputer;
-            Robj.compute(s);
+            Robj.compute(cParams);
             obj.R = Robj.R;
         end
         
         function computeElementalStiffnessMatrices(obj,s)
+            K_el = zeros(4,4,s.nElem);
             for iel=1:s.nElem
                 s.iel = iel;
-                [cParams] = obj.computeBarLength(s);
-                obj.computeEuclidianMatrix(cParams);
-                Kprima        = s.mat1*s.mat2/cParams.l*[1 -1; -1 1];
-                Kelem         = obj.R'*Kprima*obj.R;
+                s = obj.computeBarLength(s);
+                obj.computeEuclidianMatrix(s);
+                Kprima = obj.computeLocalElementalStiffnessMatrix(s);
+                s.Kprima = Kprima;
+                Kelem = obj.computeGlobalElementalStiffnessMatrix(s);
                 K_el(:,:,iel) = Kelem;
             end
             obj.Kel = K_el;
         end
         
-        function [cParams] = computeBarLength(obj,s) % Static without obj
-                BarElem = BarElemComputer();
-                BarElem.compute(s);
-                cParams.x1      = BarElem.x1;
-                cParams.x2      = BarElem.x2;
-                cParams.y1      = BarElem.y1;
-                cParams.y2      = BarElem.y2;
-                cParams.l       = BarElem.l;
+        function Kelem = computeGlobalElementalStiffnessMatrix(obj,s)
+            Kelem = obj.R'*s.Kprima*obj.R;
         end
         
         function globalStiffnessMatrixAssembly(obj,s)
@@ -73,4 +68,23 @@ classdef StiffnessMatrixComputer < handle
         end
         
     end
+    
+    methods (Access = private, Static)
+        
+        function s = computeBarLength(s)
+            BarElem = BarElemComputer();
+            BarElem.compute(s);
+            s.x1      = BarElem.x1;
+            s.x2      = BarElem.x2;
+            s.y1      = BarElem.y1;
+            s.y2      = BarElem.y2;
+            s.l       = BarElem.l;
+        end
+        
+        function Kprima = computeLocalElementalStiffnessMatrix(s)
+            Kprima = s.mat1*s.mat2/s.l*[1 -1; -1 1];
+        end
+        
+    end
+    
 end

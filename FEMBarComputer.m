@@ -7,10 +7,10 @@ classdef FEMBarComputer < handle
         Td
         mat
         Tmat
-        nElem = 12
+        nElem
         K_G 
-        vR = [1 2 9 10]
-        vL = [3 4 5 6 7 8 11 12 13 14 15 16]
+        vR
+        vL
         uL
         solver
     end
@@ -37,12 +37,16 @@ classdef FEMBarComputer < handle
     methods (Access = private)
         
         function init(obj,t)
-            data     = load(['Tests/BC',t,'.mat']);
-            obj.F    = data.BC(1).f;
-            obj.x    = data.BC(2).f;
-            obj.Tnod = data.BC(3).f;
-            obj.mat  = data.BC(4).f;
-            obj.Tmat = data.BC(5).f;
+            data      = load(['Tests/BC',t,'.mat']);
+            obj.F     = data.BC(1).f;
+            obj.x     = data.BC(2).f;
+            obj.Tnod  = data.BC(3).f;
+            obj.mat   = data.BC(4).f;
+            obj.Tmat  = data.BC(5).f;
+            obj.nElem = 12;
+            obj.vR    = [1 2 9 10];
+            obj.vL    = [3 4 5 6 7 8 11 12 13 14 15 16];
+            
         end
         
         function computeStiffnessMatrix(obj)
@@ -98,6 +102,7 @@ classdef FEMBarComputer < handle
             s.Td = obj.Td;
             s.mat1 = obj.mat(1);
             stressObject = StressComputer(s);
+            stressObject.compute(s);
             obj.Stress   = stressObject.Stress;
         end
 

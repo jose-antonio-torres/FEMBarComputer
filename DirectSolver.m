@@ -2,7 +2,7 @@ classdef DirectSolver < Solver
     
     methods (Access = protected)
         
-        function computeDisplacements(obj)
+        function computeUnknowns(obj)
             obj.u = obj.LHS\obj.RHS;
         end
         

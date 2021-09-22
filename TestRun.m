@@ -1,49 +1,55 @@
 classdef TestRun < handle
     
-    properties (Access = protected)
-        Solver
+    properties (Access = public)
+        Result
     end
     
     methods (Access = public)
-        function selectTest(obj,t)
-            obj.selectSolverType();
-            cParams = obj.init(t);
-            obj.testSolver(cParams);
+        function test(obj,s)
+            cParams = obj.init(s);
+            obj.checkError(cParams);
         end
     end
     
     methods (Access = private)
-        function cParams = init(obj,t)
+        function cParams = init(obj,s)
+            obj.prepareTest(s);
             cParams.s = obj.Solver;
-            cParams.t = t;
+            cParams.t = s.t;
         end
     end
     
     methods (Access = protected)
-        function testSolver(obj,cParams)
-            cParams.Stress = obj.computeProblemStress(cParams);
+        function checkError(obj,cParams)
+            cParams.Value = obj.computeFEMProblem(cParams);
             error  = obj.calculateError(cParams);
             if error < 1e-5
-                cprintf('green', 'Test pass ');
+                obj.Result = 'Test pass ';
+                cprintf('green', obj.Result);
             else
-                cprintf('red', 'Test fail ');
+                obj.Result = 'Test fail ';
+                cprintf('red', obj.Result);
             end
         end
+        
+    end
+    
+    methods (Access = protected, Static)
    
-        function [Stress] = computeProblemStress(obj,cParams)
+        function [Value] = computeFEMProblem(cParams)
             FEM = FEMBarComputer(cParams);
             FEM.compute();
-            Stress = FEM.Stress;
+            Value = FEM.Stress;
         end
         
-        function [error] = calculateError(obj,cParams)
+        function [error] = calculateError(cParams)
             control = load(['Results/Stress',cParams.t,'_ok.mat']);
-            error   = norm(cParams.Stress-control.Stress);
+            error   = norm(cParams.Value-control.Stress);
         end
     end
     
     methods (Abstract, Access = protected)
-        selectSolverType(obj);
+        prepareTest(obj);
     end
     
 end

@@ -13,7 +13,7 @@ classdef Solver < handle
         
         function solveSystem(obj,s)
             obj.init(s.K_LL,s.F_extL);
-            obj.computeDisplacements();
+            obj.computeUnknowns();
         end
         
     end
@@ -26,7 +26,7 @@ classdef Solver < handle
     end
     
     methods (Abstract, Access = protected)
-        computeDisplacements(obj);
+        computeUnknowns(obj);
     end
     
 end

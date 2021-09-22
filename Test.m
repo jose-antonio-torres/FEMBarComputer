@@ -1,9 +1,8 @@
 %% Test FEM
 
-% Wednesday 22/09:
-% all objects are 100% general - for instance check function of zip
-% static functions when necessary
-% DUDA: diferencia entre s y cParams + entran en constructor o compute¿?
+% DUDAS: diferencia entre s y cParams + entran en constructor o compute¿?
+%        ¿Es siempre necesaria la función init()?
+%        ¿Las clases abstractas siguen la estructura constructor-init?
 
 clear all;
 clc;
@@ -15,13 +14,17 @@ profile('on')
 
 tD = ['1';'2';'3'];
 tI = ['4';'5'];
+sD.Solver = 'D';
+sI.Solver = 'I';
 for i = 1:length(tD)
-    Problem = DirectRun;
-    Problem.selectTest(tD(i));
+    sD.t = tD(i);
+    Check = SolverSelection;
+    Check.test(sD);
 end
 for i = 1:length(tI)
-    Problem = IterativeRun;
-    Problem.selectTest(tD(i));
+    sI.t = tD(i);
+    Check = SolverSelection;
+    Check.test(sI);
 end
 
 profile('viewer')
