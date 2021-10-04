@@ -11,6 +11,7 @@ classdef FEMBarComputer < handle
         K_G 
         vR
         vL
+        vF
         uL
         solver
     end
@@ -46,36 +47,36 @@ classdef FEMBarComputer < handle
             obj.nElem = 12;
             obj.vR    = [1 2 9 10];
             obj.vL    = [3 4 5 6 7 8 11 12 13 14 15 16];
-            
+            obj.vF    = [2 4 6];
         end
         
         function computeStiffnessMatrix(obj)
-            s.nElem = obj.nElem;
-            s.mat1 = obj.mat(1);
-            s.mat2 = obj.mat(2);
-            s.Tnod = obj.Tnod;
-            s.x = obj.x;
-            s.Td = obj.Td;
-            Kcomputed = StiffnessMatrixComputer;
-            Kcomputed.compute(s);
+            s.nElem   = obj.nElem;
+            s.mat1    = obj.mat(1);
+            s.mat2    = obj.mat(2);
+            s.Tnod    = obj.Tnod;
+            s.x       = obj.x;
+            s.Td      = obj.Td;
+            Kcomputed = StiffnessMatrixComputer(s);
+            Kcomputed.compute();
             obj.K_G   = Kcomputed.K;
         end
         
         function computeDoFMatrix(obj)
-            s.nElem = obj.nElem;
-            s.Tnod = obj.Tnod;
-            Tdcomputed = DoFMatrixComputer;
-            Tdcomputed.compute(s);
+            s.nElem    = obj.nElem;
+            s.Tnod     = obj.Tnod;
+            Tdcomputed = ConnectivityMatrixComputer(s);
+            Tdcomputed.compute();
             obj.Td     = Tdcomputed.Td;
         end
         
         function createSolver(obj,solverType)
-                cParams.type = solverType;
-                obj.solver   = SolverFactory.create(cParams);
+                s.type       = solverType;
+                obj.solver   = SolverFactory.create(s);
         end
         
-        function solveSystem(obj,cParams)
-            obj.solver.solveSystem(cParams);
+        function solveSystem(obj,s)
+            obj.solver.solveSystem(s);
             obj.uL = obj.solver.u;
         end
         
@@ -90,19 +91,20 @@ classdef FEMBarComputer < handle
         end
         
         function F_extL = computeReducedExternalForcesVector(obj)
-            F_extL = [0; obj.F; 0; obj.F; 0; obj.F; 0; 0; 0; 0; 0; 0];
+            F_extL = zeros(obj.nElem,1);
+            F_extL(obj.vF) = obj.F;
         end
         
         function computeStress(obj)
-            s.nElem = obj.nElem;
-            s.uL = obj.uL;
-            s.vL = obj.vL;
-            s.x = obj.x;
-            s.Tnod = obj.Tnod;
-            s.Td = obj.Td;
-            s.mat1 = obj.mat(1);
+            s.nElem      = obj.nElem;
+            s.uL         = obj.uL;
+            s.vL         = obj.vL;
+            s.x          = obj.x;
+            s.Tnod       = obj.Tnod;
+            s.Td         = obj.Td;
+            s.mat1       = obj.mat(1);
             stressObject = StressComputer(s);
-            stressObject.compute(s);
+            stressObject.compute();
             obj.Stress   = stressObject.Stress;
         end
 

@@ -11,17 +11,17 @@ classdef Solver < handle
     
     methods (Access = public)
         
-        function solveSystem(obj,s)
-            obj.init(s.K_LL,s.F_extL);
+        function solveSystem(obj,cParams)
+            obj.init(cParams);
             obj.computeUnknowns();
         end
         
     end
     
     methods (Access = private)
-        function init(obj,K,F)
-            obj.LHS = K;
-            obj.RHS = F;
+        function init(obj,cParams)
+            obj.LHS = cParams.K_LL;
+            obj.RHS = cParams.F_extL;
         end
     end
     

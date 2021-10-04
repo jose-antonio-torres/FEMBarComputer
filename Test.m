@@ -1,14 +1,12 @@
 %% Test FEM
 
-% DUDAS: diferencia entre s y cParams + entran en constructor o compute¿?
-%        ¿Es siempre necesaria la función init()?
-%        ¿Las clases abstractas siguen la estructura constructor-init?
+% No puc imposar s=obj directament (props privades)
 
 clear all;
 clc;
 
-profile('clear')
-profile('on')
+% profile('clear')
+% profile('on')
 
 %% DATA READ
 
@@ -27,6 +25,6 @@ for i = 1:length(tI)
     Check.test(sI);
 end
 
-profile('viewer')
-profile('clear')
-profile('off')
+% profile('viewer')
+% profile('clear')
+% profile('off')
