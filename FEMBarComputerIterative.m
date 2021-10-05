@@ -1,4 +1,4 @@
-classdef FEMBarComputer < handle
+classdef FEMBarComputerIterative < handle
     
     properties (Access = private)
         F
@@ -8,23 +8,24 @@ classdef FEMBarComputer < handle
         mat
         Tmat
         nElem
-        K_G 
         vR
         vL
         vF
         uL
+        solverType = 'Iterat';
         solver
     end
     
     properties (Access = public)
+        KG
         Stress
     end
     
     methods (Access = public)
         
-        function obj = FEMBarComputer(cParams)
-            obj.init(cParams.t);
-            obj.createSolver(cParams.s);
+        function obj = FEMBarComputerIterative(t)
+            obj.init(t);
+            obj.createSolver();
         end
         
         function compute(obj)
@@ -59,7 +60,7 @@ classdef FEMBarComputer < handle
             s.Td      = obj.Td;
             Kcomputed = StiffnessMatrixComputer(s);
             Kcomputed.compute();
-            obj.K_G   = Kcomputed.K;
+            obj.KG   = Kcomputed.K;
         end
         
         function computeDoFMatrix(obj)
@@ -70,8 +71,8 @@ classdef FEMBarComputer < handle
             obj.Td     = Tdcomputed.Td;
         end
         
-        function createSolver(obj,solverType)
-                s.type       = solverType;
+        function createSolver(obj)
+                s.type       = obj.solverType;
                 obj.solver   = SolverFactory.create(s);
         end
         
@@ -87,7 +88,7 @@ classdef FEMBarComputer < handle
         end
         
         function K_LL = computeReducedStiffnessMatrix(obj)
-            K_LL = obj.K_G(obj.vL,obj.vL);
+            K_LL = obj.KG(obj.vL,obj.vL);
         end
         
         function F_extL = computeReducedExternalForcesVector(obj)

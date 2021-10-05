@@ -72,17 +72,17 @@ classdef StiffnessMatrixComputer < handle
         end
         
         function globalStiffnessMatrixAssembly(obj)
-            K_global = obj.K;
+            KG = obj.K;
             for iel = 1:obj.nElem
                 for i = 1:4
                     I = obj.Td(iel,i);
                     for j = 1:4
                         J = obj.Td(iel,j);
-                        K_global(I,J) = K_global(I,J)+obj.Kel(i,j,iel);
+                        KG(I,J) = KG(I,J)+obj.Kel(i,j,iel);
                     end
                 end
             end
-            obj.K = K_global;
+            obj.K = KG;
         end
         
     end

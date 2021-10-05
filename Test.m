@@ -12,17 +12,15 @@ clc;
 
 tD = ['1';'2';'3'];
 tI = ['4';'5'];
-sD.Solver = 'D';
-sI.Solver = 'I';
+
+Check = TestFEMBar;
 for i = 1:length(tD)
-    sD.t = tD(i);
-    Check = SolverSelection;
-    Check.test(sD);
+    Check.selectSolver('Direct');
+    Check.test(tD(i));
 end
 for i = 1:length(tI)
-    sI.t = tD(i);
-    Check = SolverSelection;
-    Check.test(sI);
+    Check.selectSolver('Iterat');
+    Check.test(tI(i));
 end
 
 % profile('viewer')
