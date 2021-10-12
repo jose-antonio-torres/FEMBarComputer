@@ -1,30 +1,30 @@
 classdef TestFEMBar < TestRun
     
     properties (Access = public)
-        Solver
-        Stress
+        solver
+        stress
     end
     
     methods (Access = public)
         function selectSolver(obj,s)
-            obj.Solver = s;
+            obj.solver = s;
         end
     end
     
     methods (Access = protected)
         function performTest(obj,t)
-            if obj.Solver == 'Direct'
+            if obj.solver == 'Direct'
                 FEM = FEMBarComputerDirect(t);
-            elseif obj.Solver == 'Iterat'
+            elseif obj.solver == 'Iterat'
                 FEM = FEMBarComputerIterative(t);
             end
             FEM.compute();
-            obj.Stress = FEM.Stress;
+            obj.stress = FEM.stress;
         end
         
         function calculateError(obj,t)
-            control = load(['Results/Stress',t,'_ok.mat']);
-            obj.Error   = norm(obj.Stress-control.Stress);
+            control     = load(['Results/Stress',t,'_ok.mat']);
+            obj.error   = norm(obj.stress-control.Stress);
         end
     end
     

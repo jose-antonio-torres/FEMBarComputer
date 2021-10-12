@@ -49,22 +49,21 @@ classdef StiffnessMatrixComputer < handle
         end
         
         function computeElementalStiffnessMatrices(obj)
-            K_el = zeros(4,4,obj.nElem);
+            Ke = zeros(4,4,obj.nElem);
             for iel=1:obj.nElem
-                s.x      = obj.x;
-                s.Tnod   = obj.Tnod;
-                s.iel    = iel;
-                s        = obj.computeBarLength(s);
+                s.x        = obj.x;
+                s.Tnod     = obj.Tnod;
+                s.iel      = iel;
+                s          = obj.computeBarLength(s);
                 obj.computeEuclidianMatrix(s);
-                obj.Kprima   = obj.computeLocalElementalStiffnessMatrix(s.l);
-                Kelem    = obj.computeGlobalElementalStiffnessMatrix();
-                K_el(:,:,iel) = Kelem;
+                obj.computeLocalElementalStiffnessMatrix(s.l);
+                Ke(:,:,iel) = obj.computeGlobalElementalStiffnessMatrix();
             end
-            obj.Kel = K_el;
+            obj.Kel = Ke;
         end
         
         function Kprima = computeLocalElementalStiffnessMatrix(obj,l)
-            Kprima = obj.mat1*obj.mat2/l*[1 -1; -1 1];
+            obj.Kprima = obj.mat1*obj.mat2/l*[1 -1; -1 1];
         end
         
         function Kelem = computeGlobalElementalStiffnessMatrix(obj)

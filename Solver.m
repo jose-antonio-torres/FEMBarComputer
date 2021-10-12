@@ -13,7 +13,7 @@ classdef Solver < handle
         
         function solveSystem(obj,cParams)
             obj.init(cParams);
-            obj.computeUnknowns();
+            obj.solve();
         end
         
     end
@@ -26,7 +26,7 @@ classdef Solver < handle
     end
     
     methods (Abstract, Access = protected)
-        computeUnknowns(obj);
+        solve(obj);
     end
     
 end

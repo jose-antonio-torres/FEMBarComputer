@@ -12,13 +12,13 @@ classdef FEMBarComputerDirect < handle
         vL
         vF
         uL
-        solverType = 'Direct';
+        solverType
         solver
+        KG
     end
     
     properties (Access = public)
-        KG
-        Stress
+        stress
     end
     
     methods (Access = public)
@@ -39,16 +39,17 @@ classdef FEMBarComputerDirect < handle
     methods (Access = private)
         
         function init(obj,t)
-            data      = load(['Tests/BC',t,'.mat']);
-            obj.F     = data.BC(1).f;
-            obj.x     = data.BC(2).f;
-            obj.Tnod  = data.BC(3).f;
-            obj.mat   = data.BC(4).f;
-            obj.Tmat  = data.BC(5).f;
-            obj.nElem = 12;
-            obj.vR    = [1 2 9 10];
-            obj.vL    = [3 4 5 6 7 8 11 12 13 14 15 16];
-            obj.vF    = [2 4 6];
+            data           = load(['Tests/BC',t,'.mat']);
+            obj.F          = data.BC(1).f;
+            obj.x          = data.BC(2).f;
+            obj.Tnod       = data.BC(3).f;
+            obj.mat        = data.BC(4).f;
+            obj.Tmat       = data.BC(5).f;
+            obj.nElem      = 12;
+            obj.vR         = [1 2 9 10];
+            obj.vL         = [3 4 5 6 7 8 11 12 13 14 15 16];
+            obj.vF         = [2 4 6];
+            obj.solverType = 'Direct';
         end
         
         function computeStiffnessMatrix(obj)
@@ -60,7 +61,7 @@ classdef FEMBarComputerDirect < handle
             s.Td      = obj.Td;
             Kcomputed = StiffnessMatrixComputer(s);
             Kcomputed.compute();
-            obj.KG   = Kcomputed.K;
+            obj.KG    = Kcomputed.K;
         end
         
         function computeDoFMatrix(obj)
@@ -106,7 +107,7 @@ classdef FEMBarComputerDirect < handle
             s.mat1       = obj.mat(1);
             stressObject = StressComputer(s);
             stressObject.compute();
-            obj.Stress   = stressObject.Stress;
+            obj.stress   = stressObject.stress;
         end
 
     end

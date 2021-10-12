@@ -28,16 +28,16 @@ classdef ConnectivityMatrixComputer < handle
         end
         
         function defineConnectivityMatrix(obj)
-            Tdmat   = zeros(obj.nElem,4);
+            T   = zeros(obj.nElem,4);
             for iel = 1:obj.nElem
                 for a = 1:2
                     for j = 1:2
                         i = 2*(a-1)+j;
-                        Tdmat(iel,i) = 2*(obj.Tnod(iel,a)-1)+j;
+                        T(iel,i) = 2*(obj.Tnod(iel,a)-1)+j;
                     end
                 end
             end
-            obj.Td = Tdmat;
+            obj.Td = T;
         end
     end
 end

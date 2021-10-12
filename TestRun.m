@@ -1,11 +1,11 @@
 classdef TestRun < handle
     
     properties (Access = protected)
-        Error
+        error
     end
     
     properties (Access = public)
-        Result
+        result
     end
     
     methods (Access = public)
@@ -18,12 +18,12 @@ classdef TestRun < handle
         function checkError(obj,t)
             obj.performTest(t);
             obj.calculateError(t);
-            if obj.Error < 1e-5
-                obj.Result = 'Test pass ';
-                cprintf('green', obj.Result);
+            if obj.error < 1e-5
+                obj.result = 'Test pass ';
+                cprintf('green', obj.result);
             else
-                obj.Result = 'Test fail ';
-                cprintf('red', obj.Result);
+                obj.result = 'Test fail ';
+                cprintf('red', obj.result);
             end
         end
         

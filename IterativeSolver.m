@@ -2,7 +2,7 @@ classdef IterativeSolver < Solver
     
     methods (Access = protected)
         
-        function computeUnknowns(obj)
+        function solve(obj)
             u0    = zeros(length(obj.RHS),1);
             obj.u = u0;
             obj.executeGaussSeidel(u0);
